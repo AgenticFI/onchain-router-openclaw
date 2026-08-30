@@ -10,3 +10,11 @@ The minimal OpenClaw provider-registration boundary was informed by ClawRouter:
 
 No ClawRouter wallet, payment, retry, proxy, routing, catalog, branding, telemetry, Solana, media,
 search, trading, or private-key configuration implementation is included.
+
+The adapter compiles against and declares a peer on the official OpenClaw plugin SDK/runtime:
+
+- package: `openclaw@2026.7.1-2`
+- project: `https://github.com/openclaw/openclaw`
+- license: MIT
+
+OpenClaw is externalized from the adapter bundle and supplied by the user's host installation.
