@@ -1,0 +1,23 @@
+{
+  "id": "onchain-router",
+  "name": "Onchain Router",
+  "description": "Use policy-bounded, receipt-backed LLM calls through the local Onchain Router Buyer Runtime.",
+  "activation": { "onStartup": true },
+  "enabledByDefault": false,
+  "providers": ["onchain-router"],
+  "configSchema": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "proxyOrigin": {
+        "type": "string",
+        "default": "http://127.0.0.1:8402",
+        "description": "Loopback origin of the separately running Onchain Router buyer proxy."
+      },
+      "tokenFile": {
+        "type": "string",
+        "description": "Owner-only file containing the buyer proxy bearer. Defaults to ~/.onchain-router/proxy-token."
+      }
+    }
+  }
+}
