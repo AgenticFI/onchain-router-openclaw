@@ -4,7 +4,8 @@
 - The bearer file must be a current-user-owned, non-symlink regular file with mode `0600`.
 - The adapter never accepts a wallet private key, mnemonic, payment signature, provider key, or
   production API origin.
-- Catalog responses are bounded to 4 MiB and validated before provider registration.
+- Catalog responses are bounded to 4 MiB and validated only when OpenClaw invokes a lazy runtime or
+  unified live-model catalog; registration itself performs no network or token-file I/O.
 - No prompt, completion, bearer, payment payload, or receipt token is logged.
 - The adapter performs no retry or fallback. Buyer Runtime owns outcome classification and durable
   recovery.

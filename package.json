@@ -3,9 +3,19 @@
   "version": "0.1.0",
   "private": true,
   "packageManager": "pnpm@9.15.0",
+  "engines": {
+    "node": ">=24.15.0 <25"
+  },
   "description": "Private OpenClaw adapter for the local Onchain Router Buyer Runtime proxy",
   "type": "module",
-  "files": ["dist", "openclaw.plugin.json", "README.md", "SECURITY.md", "LICENSE"],
+  "files": [
+    "dist",
+    "openclaw.plugin.json",
+    "README.md",
+    "SECURITY.md",
+    "THIRD_PARTY_NOTICES.md",
+    "LICENSE"
+  ],
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
@@ -13,15 +23,42 @@
     }
   },
   "scripts": {
-    "build": "tsup src/index.ts --format esm --dts --clean",
+    "build": "tsup src/index.ts --format esm --dts --clean --external openclaw",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
+    "qualification:clean-install": "node scripts/clean-install.mjs",
     "check": "pnpm typecheck && pnpm test && pnpm build"
+  },
+  "peerDependencies": {
+    "openclaw": "2026.7.1-2"
   },
   "devDependencies": {
     "@types/node": "24.10.1",
+    "openclaw": "2026.7.1-2",
     "tsup": "8.5.1",
     "typescript": "5.9.3",
     "vitest": "4.1.0"
+  },
+  "openclaw": {
+    "extensions": [
+      "./src/index.ts"
+    ],
+    "runtimeExtensions": [
+      "./dist/index.js"
+    ],
+    "providers": [
+      "onchain-router"
+    ],
+    "install": {
+      "minHostVersion": ">=2026.7.1-2"
+    },
+    "compat": {
+      "pluginApi": ">=2026.7.1-2",
+      "minGatewayVersion": "2026.7.1-2"
+    },
+    "build": {
+      "openclawVersion": "2026.7.1-2",
+      "pluginSdkVersion": "2026.7.1-2"
+    }
   }
 }

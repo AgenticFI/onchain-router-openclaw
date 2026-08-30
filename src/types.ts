@@ -1,47 +1,28 @@
-export type ModelDefinition = {
-  id: string;
-  name: string;
-  api: 'openai-completions';
-  reasoning: boolean;
-  input: Array<'text' | 'image'>;
-  cost: { input: number; output: number; cacheRead: number; cacheWrite: number };
-  contextWindow: number;
-  maxTokens: number;
-};
+import type {
+  OpenClawPluginApi,
+  ProviderCatalogResult,
+} from "openclaw/plugin-sdk/plugin-entry";
 
-export type ProviderPlugin = {
-  id: string;
-  label: string;
-  docsPath: string;
-  aliases: string[];
-  envVars: string[];
-  models: {
-    baseUrl: string;
-    apiKey: string;
-    api: 'openai-completions';
-    authHeader: true;
-    models: ModelDefinition[];
-  };
-  auth: [];
-};
+export type PluginApi = Pick<
+  OpenClawPluginApi,
+  | "pluginConfig"
+  | "logger"
+  | "registerProvider"
+  | "registerModelCatalogProvider"
+>;
 
-export type PluginApi = {
-  pluginConfig?: Record<string, unknown>;
-  logger: {
-    info(message: string): void;
-    warn(message: string): void;
-    error(message: string): void;
-  };
-  registerProvider(provider: ProviderPlugin): void;
-};
+export type ProviderPlugin = Parameters<
+  OpenClawPluginApi["registerProvider"]
+>[0];
 
-export type PluginDefinition = {
-  id: string;
-  name: string;
-  description: string;
-  version: string;
-  register(api: PluginApi): Promise<void>;
-};
+export type UnifiedCatalogPlugin = Parameters<
+  OpenClawPluginApi["registerModelCatalogProvider"]
+>[0];
+
+export type ProviderConfig = Extract<
+  ProviderCatalogResult,
+  { provider: unknown }
+>["provider"];
 
 export interface ProxyModel {
   readonly id: string;
