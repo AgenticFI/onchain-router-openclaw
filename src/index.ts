@@ -1,11 +1,13 @@
-import {
-  definePluginEntry,
-  type OpenClawPluginDefinition,
-} from "openclaw/plugin-sdk/plugin-entry";
+import { createHash } from "node:crypto";
+import { definePluginEntry } from "openclaw/plugin-sdk/plugin-entry";
 import { fetchProxyModels } from "./catalog.js";
+import { dispatchCommand } from "./commands.js";
 import { parseConfig, readProxyToken } from "./config.js";
+import { createProxyService, type ProxyServiceDependencies } from "./proxy-service.js";
+import { createOnchainRouterTools } from "./tools.js";
 import type {
   PluginApi,
+  PluginService,
   ProviderConfig,
   ProviderPlugin,
   UnifiedCatalogPlugin,
@@ -13,9 +15,23 @@ import type {
 
 export const VERSION = "0.1.0";
 
+export function stableTurnIdempotencyKey(
+  sessionId: string | undefined,
+  turnId: string,
+  modelId: string,
+): string {
+  const digest = createHash("sha256")
+    .update([sessionId ?? "", turnId, modelId].join("\0"), "utf8")
+    .digest("hex");
+  return `openclaw-${digest}`;
+}
+
 export function registerOnchainRouter(
   api: PluginApi,
-  dependencies: { readonly fetch?: typeof fetch } = {},
+  dependencies: {
+    readonly fetch?: typeof fetch;
+    readonly proxyService?: ProxyServiceDependencies;
+  } = {},
 ): void {
   const config = parseConfig(api.pluginConfig);
   const provider: ProviderPlugin = {
@@ -31,6 +47,16 @@ export function registerOnchainRouter(
       }),
     },
     auth: [],
+    resolveTransportTurnState: (context) => ({
+      headers: {
+        "Idempotency-Key": stableTurnIdempotencyKey(
+          context.sessionId,
+          context.turnId,
+          context.modelId,
+        ),
+        "Cache-Control": "no-store",
+      },
+    }),
   };
   api.registerProvider(provider);
   const unifiedCatalog: UnifiedCatalogPlugin = {
@@ -48,6 +74,18 @@ export function registerOnchainRouter(
     },
   };
   api.registerModelCatalogProvider(unifiedCatalog);
+  for (const tool of createOnchainRouterTools(config, { fetch: dependencies.fetch }))
+    api.registerTool(tool);
+  api.registerCommand({
+    name: "onchain-router",
+    description: "AgenticFI Onchain Router status, discovery, diagnostics, and recovery help",
+    acceptsArgs: true,
+    requireAuth: true,
+    handler: async (context) => ({
+      text: await dispatchCommand(config, context.args, { fetch: dependencies.fetch }),
+    }),
+  });
+  api.registerService(createProxyService(config, dependencies.proxyService));
   api.logger.info(
     `Onchain Router registered its policy-filtered catalog through ${config.proxyOrigin}.`,
   );
@@ -86,7 +124,7 @@ async function fetchConfiguredModels(
   return await fetchProxyModels(config.proxyOrigin, token, dependencies.fetch);
 }
 
-const plugin: OpenClawPluginDefinition = definePluginEntry({
+const plugin = definePluginEntry({
   id: "onchain-router",
   name: "Onchain Router",
   description: "Policy-bounded, receipt-backed LLM calls through Buyer Runtime",
@@ -96,9 +134,24 @@ const plugin: OpenClawPluginDefinition = definePluginEntry({
 });
 
 export { fetchProxyModels } from "./catalog.js";
+export { getFree, postPaid } from "./api.js";
+export { COMMAND_HELP, dispatchCommand } from "./commands.js";
 export { parseConfig, readProxyToken, type AdapterConfig } from "./config.js";
+export {
+  createProxyService,
+  resolveProxyEntrypoint,
+  type ManagedChild,
+  type ProxyServiceDependencies,
+} from "./proxy-service.js";
+export {
+  validateImage,
+  validateSpeech,
+  validateTranscription,
+} from "./schemas.js";
+export { createOnchainRouterTools } from "./tools.js";
 export type {
   PluginApi,
+  PluginService,
   ProviderConfig,
   ProviderPlugin,
   ProxyModel,

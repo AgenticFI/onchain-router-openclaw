@@ -1,17 +1,25 @@
 {
-  "name": "@onchain-router/openclaw",
+  "name": "@agenticfi/onchain-router-openclaw",
   "version": "0.1.0",
-  "private": true,
   "packageManager": "pnpm@9.15.0",
   "engines": {
     "node": ">=24.15.0 <25"
   },
-  "description": "Private OpenClaw adapter for the local Onchain Router Buyer Runtime proxy",
+  "description": "OpenClaw provider adapter for the local AgenticFI Onchain Router Buyer Runtime",
+  "license": "MIT",
+  "author": "AgenticFI",
+  "homepage": "https://llm.agenticfi.wtf/docs/openclaw",
+  "bugs": "https://github.com/AgenticFI/onchain-router-openclaw/issues",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AgenticFI/onchain-router-openclaw.git"
+  },
   "type": "module",
   "files": [
     "dist",
     "openclaw.plugin.json",
     "README.md",
+    "CHANGELOG.md",
     "SECURITY.md",
     "THIRD_PARTY_NOTICES.md",
     "LICENSE"
@@ -29,12 +37,16 @@
     "qualification:clean-install": "node scripts/clean-install.mjs",
     "check": "pnpm typecheck && pnpm test && pnpm build"
   },
+  "dependencies": {
+    "@agenticfi/onchain-router-proxy": "0.1.0",
+    "typebox": "1.3.16"
+  },
   "peerDependencies": {
-    "openclaw": "2026.7.1-2"
+    "openclaw": "2026.8.1"
   },
   "devDependencies": {
     "@types/node": "24.10.1",
-    "openclaw": "2026.7.1-2",
+    "openclaw": "2026.8.1",
     "tsup": "8.5.1",
     "typescript": "5.9.3",
     "vitest": "4.1.0"
@@ -50,15 +62,15 @@
       "onchain-router"
     ],
     "install": {
-      "minHostVersion": ">=2026.7.1-2"
+      "minHostVersion": ">=2026.8.1"
     },
     "compat": {
-      "pluginApi": ">=2026.7.1-2",
-      "minGatewayVersion": "2026.7.1-2"
+      "pluginApi": ">=2026.8.1",
+      "minGatewayVersion": "2026.8.1"
     },
     "build": {
-      "openclawVersion": "2026.7.1-2",
-      "pluginSdkVersion": "2026.7.1-2"
+      "openclawVersion": "2026.8.1",
+      "pluginSdkVersion": "2026.8.1"
     }
   }
 }

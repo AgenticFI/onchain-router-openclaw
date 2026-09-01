@@ -1,12 +1,14 @@
 import { lstatSync, readFileSync } from 'node:fs';
 import { homedir } from 'node:os';
-import { isAbsolute, join, resolve } from 'node:path';
+import { dirname, isAbsolute, join, resolve } from 'node:path';
 
 const TOKEN = /^[A-Za-z0-9_-]{43}$/;
 
 export interface AdapterConfig {
   readonly proxyOrigin: string;
   readonly tokenFile: string;
+  readonly profileDirectory: string;
+  readonly manageProxy: boolean;
 }
 
 export function parseConfig(value: Record<string, unknown> | undefined): AdapterConfig {
@@ -34,7 +36,20 @@ export function parseConfig(value: Record<string, unknown> | undefined): Adapter
     throw new Error('tokenFile must be a string');
   const tokenFile = configuredToken ?? join(homedir(), '.onchain-router', 'proxy-token');
   const absolute = isAbsolute(tokenFile) ? resolve(tokenFile) : resolve(tokenFile);
-  return { proxyOrigin: url.origin, tokenFile: absolute };
+  const configuredProfile = value?.['profileDirectory'];
+  if (configuredProfile !== undefined && typeof configuredProfile !== 'string')
+    throw new Error('profileDirectory must be a string');
+  const profileDirectory = resolve(configuredProfile ?? dirname(absolute));
+  const configuredManagement = value?.['manageProxy'] ?? true;
+  if (typeof configuredManagement !== 'boolean') throw new Error('manageProxy must be boolean');
+  if (configuredManagement && absolute !== join(profileDirectory, 'proxy-token'))
+    throw new Error('managed proxy tokenFile must be profileDirectory/proxy-token');
+  return {
+    proxyOrigin: url.origin,
+    tokenFile: absolute,
+    profileDirectory,
+    manageProxy: configuredManagement,
+  };
 }
 
 export function readProxyToken(path: string): string {
