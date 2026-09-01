@@ -9,7 +9,15 @@
 - No prompt, completion, bearer, payment payload, or receipt token is logged.
 - The adapter performs no retry or fallback. Buyer Runtime owns outcome classification and durable
   recovery.
+- Registration performs no file, network, process, wallet, or payment action. The OpenClaw service
+  may reuse or start only the exact installed proxy dependency and never downloads at runtime.
+- A managed child receives a minimal environment and is never automatically restarted. The
+  adapter stops only the child it created.
 
 The bearer is passed to OpenClaw's in-process provider configuration because OpenClaw must
 authenticate to the loopback proxy. This repository does not persist that configuration. The
 OpenClaw profile and the bearer file must remain accessible only to the same trusted OS user.
+
+Report suspected vulnerabilities privately through
+<https://github.com/AgenticFI/onchain-router-openclaw/security/advisories/new>. Do not include
+wallet keys, proxy bearers, payment payloads, receipt capabilities, prompts, or model output.

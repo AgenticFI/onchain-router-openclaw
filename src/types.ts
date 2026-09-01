@@ -9,6 +9,7 @@ export type PluginApi = Pick<
   | "logger"
   | "registerProvider"
   | "registerModelCatalogProvider"
+  | "registerService"
 >;
 
 export type ProviderPlugin = Parameters<
@@ -18,6 +19,8 @@ export type ProviderPlugin = Parameters<
 export type UnifiedCatalogPlugin = Parameters<
   OpenClawPluginApi["registerModelCatalogProvider"]
 >[0];
+
+export type PluginService = Parameters<OpenClawPluginApi["registerService"]>[0];
 
 export type ProviderConfig = Extract<
   ProviderCatalogResult,

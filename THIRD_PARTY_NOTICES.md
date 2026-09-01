@@ -13,7 +13,7 @@ search, trading, or private-key configuration implementation is included.
 
 The adapter compiles against and declares a peer on the official OpenClaw plugin SDK/runtime:
 
-- package: `openclaw@2026.7.1-2`
+- package: `openclaw@2026.8.1`
 - project: `https://github.com/openclaw/openclaw`
 - license: MIT
 

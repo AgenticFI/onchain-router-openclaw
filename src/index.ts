@@ -1,11 +1,10 @@
-import {
-  definePluginEntry,
-  type OpenClawPluginDefinition,
-} from "openclaw/plugin-sdk/plugin-entry";
+import { definePluginEntry } from "openclaw/plugin-sdk/plugin-entry";
 import { fetchProxyModels } from "./catalog.js";
 import { parseConfig, readProxyToken } from "./config.js";
+import { createProxyService, type ProxyServiceDependencies } from "./proxy-service.js";
 import type {
   PluginApi,
+  PluginService,
   ProviderConfig,
   ProviderPlugin,
   UnifiedCatalogPlugin,
@@ -15,7 +14,10 @@ export const VERSION = "0.1.0";
 
 export function registerOnchainRouter(
   api: PluginApi,
-  dependencies: { readonly fetch?: typeof fetch } = {},
+  dependencies: {
+    readonly fetch?: typeof fetch;
+    readonly proxyService?: ProxyServiceDependencies;
+  } = {},
 ): void {
   const config = parseConfig(api.pluginConfig);
   const provider: ProviderPlugin = {
@@ -48,6 +50,7 @@ export function registerOnchainRouter(
     },
   };
   api.registerModelCatalogProvider(unifiedCatalog);
+  api.registerService(createProxyService(config, dependencies.proxyService));
   api.logger.info(
     `Onchain Router registered its policy-filtered catalog through ${config.proxyOrigin}.`,
   );
@@ -86,7 +89,7 @@ async function fetchConfiguredModels(
   return await fetchProxyModels(config.proxyOrigin, token, dependencies.fetch);
 }
 
-const plugin: OpenClawPluginDefinition = definePluginEntry({
+const plugin = definePluginEntry({
   id: "onchain-router",
   name: "Onchain Router",
   description: "Policy-bounded, receipt-backed LLM calls through Buyer Runtime",
@@ -97,8 +100,15 @@ const plugin: OpenClawPluginDefinition = definePluginEntry({
 
 export { fetchProxyModels } from "./catalog.js";
 export { parseConfig, readProxyToken, type AdapterConfig } from "./config.js";
+export {
+  createProxyService,
+  resolveProxyEntrypoint,
+  type ManagedChild,
+  type ProxyServiceDependencies,
+} from "./proxy-service.js";
 export type {
   PluginApi,
+  PluginService,
   ProviderConfig,
   ProviderPlugin,
   ProxyModel,

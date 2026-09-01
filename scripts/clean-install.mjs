@@ -21,7 +21,15 @@ try {
   if (archives.length !== 1)
     throw new Error("clean install produced an unexpected archive set");
   const archive = join(artifacts, archives[0]);
-  run("pnpm", ["exec", "openclaw", "plugins", "install", archive, "--pin"]);
+  run("pnpm", [
+    "exec",
+    "openclaw",
+    "plugins",
+    "install",
+    archive,
+    "--force",
+    "--accept-capabilities",
+  ]);
   const inspection = run(
     "pnpm",
     [
@@ -54,7 +62,9 @@ try {
   );
   if (
     packedPackage.openclaw?.runtimeExtensions?.[0] !== "./dist/index.js" ||
-    packedPackage.openclaw?.compat?.pluginApi !== ">=2026.7.1-2"
+    packedPackage.openclaw?.compat?.pluginApi !== ">=2026.8.1" ||
+    packedPackage.name !== "@agenticfi/onchain-router-openclaw" ||
+    packedPackage.dependencies?.["@agenticfi/onchain-router-proxy"] !== "0.1.0"
   )
     throw new Error("clean install package metadata drifted");
   console.log("openclaw_clean_install_ok");
