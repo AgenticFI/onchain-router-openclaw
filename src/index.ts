@@ -1,3 +1,4 @@
+import { createHash } from "node:crypto";
 import { definePluginEntry } from "openclaw/plugin-sdk/plugin-entry";
 import { fetchProxyModels } from "./catalog.js";
 import { parseConfig, readProxyToken } from "./config.js";
@@ -11,6 +12,17 @@ import type {
 } from "./types.js";
 
 export const VERSION = "0.1.0";
+
+export function stableTurnIdempotencyKey(
+  sessionId: string | undefined,
+  turnId: string,
+  modelId: string,
+): string {
+  const digest = createHash("sha256")
+    .update([sessionId ?? "", turnId, modelId].join("\0"), "utf8")
+    .digest("hex");
+  return `openclaw-${digest}`;
+}
 
 export function registerOnchainRouter(
   api: PluginApi,
@@ -33,6 +45,16 @@ export function registerOnchainRouter(
       }),
     },
     auth: [],
+    resolveTransportTurnState: (context) => ({
+      headers: {
+        "Idempotency-Key": stableTurnIdempotencyKey(
+          context.sessionId,
+          context.turnId,
+          context.modelId,
+        ),
+        "Cache-Control": "no-store",
+      },
+    }),
   };
   api.registerProvider(provider);
   const unifiedCatalog: UnifiedCatalogPlugin = {

@@ -8,6 +8,7 @@ import {
   parseConfig,
   readProxyToken,
   registerOnchainRouter,
+  stableTurnIdempotencyKey,
   type ManagedChild,
   type PluginService,
   type ProviderPlugin,
@@ -86,12 +87,36 @@ describe("Onchain Router OpenClaw adapter", () => {
       id: "onchain-router",
       catalog: { order: "simple" },
     });
+    expect(
+      registered[0]?.resolveTransportTurnState?.({
+        provider: "onchain-router",
+        modelId: "model-a",
+        sessionId: "session-1",
+        turnId: "turn-1",
+        attempt: 2,
+        transport: "stream",
+      }),
+    ).toEqual({
+      headers: {
+        "Idempotency-Key": stableTurnIdempotencyKey("session-1", "turn-1", "model-a"),
+        "Cache-Control": "no-store",
+      },
+    });
     expect(unified).toMatchObject([
       { provider: "onchain-router", kinds: ["text"] },
     ]);
     expect(services).toMatchObject([{ id: "onchain-router-buyer-proxy" }]);
     expect(fetch).not.toHaveBeenCalled();
     expect(JSON.stringify(logs)).not.toContain(TOKEN);
+  });
+
+  it("keeps one financial identity across host retries of a transport turn", () => {
+    const first = stableTurnIdempotencyKey("session-1", "turn-1", "model-a");
+    const retry = stableTurnIdempotencyKey("session-1", "turn-1", "model-a");
+    const nextTurn = stableTurnIdempotencyKey("session-1", "turn-2", "model-a");
+    expect(first).toBe(retry);
+    expect(first).toMatch(/^openclaw-[a-f0-9]{64}$/);
+    expect(nextTurn).not.toBe(first);
   });
 
   it("reuses a healthy external proxy without starting or stopping a process", async () => {

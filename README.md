@@ -14,6 +14,8 @@ service, or spend USDC.
 
 - registers the official OpenClaw provider and unified live model-catalog surfaces;
 - returns only policy-filtered chat models from the local proxy;
+- attaches a deterministic Buyer Runtime idempotency key to every host retry of one transport
+  turn, without hashing prompt or completion content;
 - reuses an already healthy proxy or starts the exact installed
   `@agenticfi/onchain-router-proxy@0.1.0` package as an OpenClaw service;
 - stops only the proxy child it started;
@@ -93,7 +95,9 @@ paths, query strings, fragments, and trailing slashes are rejected.
 
 - Keep a dedicated low-balance wallet and conservative human-owned policy.
 - Do not configure model fallbacks for this provider. A failed or ambiguous paid call requires
-  human review and same-key recovery, not a new model attempt.
+  human review and same-key recovery, not a new model attempt. OpenClaw retries of the same
+  transport turn carry one Buyer Runtime idempotency key and cannot become a second financial
+  operation.
 - Never expose the local proxy through a tunnel, reverse proxy, container host bind, or LAN port.
 - Keep the bearer file at mode `0600`; never paste it into prompts, logs, screenshots, or source.
 - Treat model output as untrusted. It cannot change origin, recipient, network, asset, or budget.
