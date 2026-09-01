@@ -1,8 +1,10 @@
 import { createHash } from "node:crypto";
 import { definePluginEntry } from "openclaw/plugin-sdk/plugin-entry";
 import { fetchProxyModels } from "./catalog.js";
+import { dispatchCommand } from "./commands.js";
 import { parseConfig, readProxyToken } from "./config.js";
 import { createProxyService, type ProxyServiceDependencies } from "./proxy-service.js";
+import { createOnchainRouterTools } from "./tools.js";
 import type {
   PluginApi,
   PluginService,
@@ -72,6 +74,17 @@ export function registerOnchainRouter(
     },
   };
   api.registerModelCatalogProvider(unifiedCatalog);
+  for (const tool of createOnchainRouterTools(config, { fetch: dependencies.fetch }))
+    api.registerTool(tool);
+  api.registerCommand({
+    name: "onchain-router",
+    description: "AgenticFI Onchain Router status, discovery, diagnostics, and recovery help",
+    acceptsArgs: true,
+    requireAuth: true,
+    handler: async (context) => ({
+      text: await dispatchCommand(config, context.args, { fetch: dependencies.fetch }),
+    }),
+  });
   api.registerService(createProxyService(config, dependencies.proxyService));
   api.logger.info(
     `Onchain Router registered its policy-filtered catalog through ${config.proxyOrigin}.`,
@@ -121,6 +134,8 @@ const plugin = definePluginEntry({
 });
 
 export { fetchProxyModels } from "./catalog.js";
+export { getFree, postPaid } from "./api.js";
+export { COMMAND_HELP, dispatchCommand } from "./commands.js";
 export { parseConfig, readProxyToken, type AdapterConfig } from "./config.js";
 export {
   createProxyService,
@@ -128,6 +143,12 @@ export {
   type ManagedChild,
   type ProxyServiceDependencies,
 } from "./proxy-service.js";
+export {
+  validateImage,
+  validateSpeech,
+  validateTranscription,
+} from "./schemas.js";
+export { createOnchainRouterTools } from "./tools.js";
 export type {
   PluginApi,
   PluginService,

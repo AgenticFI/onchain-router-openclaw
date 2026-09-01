@@ -114,9 +114,11 @@ export function createProxyService(
   let child: ManagedChild | undefined;
   let stopping = false;
   let startPromise: Promise<void> | undefined;
+  let generation = 0;
 
   async function startInternal(context: Parameters<PluginService["start"]>[0]): Promise<void> {
     stopping = false;
+    const startGeneration = ++generation;
     if (await probe(config)) {
       context.serviceHealth?.clearFailure();
       context.logger.info(`Onchain Router reused the buyer proxy at ${config.proxyOrigin}.`);
@@ -127,12 +129,14 @@ export function createProxyService(
 
     const entrypoint = resolveEntrypoint();
     const port = new URL(config.proxyOrigin).port || "80";
-    child = spawnChild(
+    const startedChild = spawnChild(
       entrypoint,
       ["--profile", config.profileDirectory, "--port", port],
       safeChildEnvironment(),
     );
-    child.once("exit", () => {
+    child = startedChild;
+    startedChild.once("exit", () => {
+      if (child === startedChild) child = undefined;
       if (!stopping)
         context.serviceHealth?.reportFailure(
           new Error("managed buyer proxy exited; paid requests were not replayed"),
@@ -141,16 +145,19 @@ export function createProxyService(
 
     const deadline = now() + START_TIMEOUT_MS;
     while (now() < deadline) {
-      if (child.exitCode !== null) break;
+      if (stopping || generation !== startGeneration || startedChild.exitCode !== null) break;
       if (await probe(config)) {
+        if (stopping || generation !== startGeneration) break;
         context.serviceHealth?.clearFailure();
         context.logger.info(`Onchain Router started the buyer proxy at ${config.proxyOrigin}.`);
         return;
       }
       await sleep(PROBE_INTERVAL_MS);
     }
-    if (child.exitCode === null) child.kill("SIGTERM");
-    child = undefined;
+    if (startedChild.exitCode === null) startedChild.kill("SIGTERM");
+    if (child === startedChild) child = undefined;
+    if (stopping || generation !== startGeneration)
+      throw new Error("buyer proxy startup was cancelled; no paid request was attempted");
     throw new Error("buyer proxy failed to become ready; no paid request was attempted");
   }
 
@@ -158,16 +165,18 @@ export function createProxyService(
     id: "onchain-router-buyer-proxy",
     async start(context) {
       if (!startPromise) {
-        startPromise = startInternal(context).catch((error: unknown) => {
+        const pending = startInternal(context);
+        startPromise = pending;
+        void pending.catch((error: unknown) => {
           context.serviceHealth?.reportFailure(error);
-          startPromise = undefined;
-          throw error;
+          if (startPromise === pending) startPromise = undefined;
         });
       }
       await startPromise;
     },
     async stop() {
       stopping = true;
+      generation += 1;
       if (child?.exitCode === null) child.kill("SIGTERM");
       child = undefined;
       startPromise = undefined;

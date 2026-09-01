@@ -10,6 +10,8 @@ export type PluginApi = Pick<
   | "registerProvider"
   | "registerModelCatalogProvider"
   | "registerService"
+  | "registerCommand"
+  | "registerTool"
 >;
 
 export type ProviderPlugin = Parameters<

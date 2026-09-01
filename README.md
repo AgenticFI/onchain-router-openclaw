@@ -6,7 +6,8 @@ connects OpenClaw to the authenticated OpenAI-compatible proxy on `127.0.0.1`.
 
 ## Release status
 
-Version `0.1.0` is a private alpha source candidate. It is not published or production-qualified.
+Version `0.1.0` is a bounded public-alpha source candidate. It is not yet published or
+production-qualified.
 Installation, build, and fake-loopback tests do not unlock a wallet, make a paid request, deploy a
 service, or spend USDC.
 
@@ -14,6 +15,11 @@ service, or spend USDC.
 
 - registers the official OpenClaw provider and unified live model-catalog surfaces;
 - returns only policy-filtered chat models from the local proxy;
+- registers read-only model, pricing, and voice discovery tools;
+- registers bounded image generation, MP3 speech, and MP3 transcription tools that require a
+  caller-supplied stable idempotency key before a paid request can start;
+- provides an authenticated `/onchain-router` command for status, redacted diagnostics, discovery,
+  and same-key recovery guidance;
 - attaches a deterministic Buyer Runtime idempotency key to every host retry of one transport
   turn, without hashing prompt or completion content;
 - reuses an already healthy proxy or starts the exact installed
@@ -43,9 +49,10 @@ pnpm check
 pnpm qualification:clean-install
 ```
 
-The clean-install qualification builds and packs this repository, installs the archive through
+The lifecycle qualification builds and packs this repository, installs the archive through
 OpenClaw's managed plugin installer in a temporary state directory, inspects the loaded runtime,
-and removes only that temporary state. It makes no paid request.
+disables and re-enables it, repeats the install as an update, performs an uninstall dry run, and
+then uninstalls it. It removes only that temporary state and makes no paid request.
 
 ## Setup
 
@@ -70,6 +77,21 @@ managed proxy:     true
 
 Choose an `onchain-router/<model-id>` entry returned by the live picker. The Buyer Runtime still
 enforces its model, amount, session, hourly, daily, recipient, network, and confirmation policy.
+
+Inside OpenClaw, use `/onchain-router help`. The native agent tools are:
+
+| Tool | Cost | Purpose |
+|---|---:|---|
+| `onchain_router_models` | Free | Live policy-filtered model catalog |
+| `onchain_router_pricing` | Free | Current pass-through model pricing |
+| `onchain_router_voices` | Free | Speech voice catalog |
+| `onchain_router_image_generate` | Paid | Image generation with a hosted URL that expires after seven days |
+| `onchain_router_speech_generate` | Paid | MP3 speech generation |
+| `onchain_router_transcribe` | Paid | Bounded MP3 transcription after retention acknowledgement |
+
+Paid tools do not derive a financial identity from prompt content or silently create one. Supply
+`idempotency_key` once per logical operation, and reuse it only with the identical request when the
+Buyer Runtime explicitly permits recovery.
 
 To run the proxy yourself, set `manageProxy` to `false` in the plugin configuration and start it
 in a human terminal:
@@ -111,6 +133,8 @@ paths, query strings, fragments, and trailing slashes are rejected.
   mode `0600`.
 - Ambiguous or `409` result: do not retry with a new key or model. Inspect Buyer Runtime receipts
   and recover with the original key and identical request.
+- In-chat checks: run `/onchain-router doctor`; it reports only redacted package, bearer-file, and
+  proxy readiness facts.
 - Manual proxy mode fails: start `onchain-router-proxy` before selecting the provider.
 
 Documentation: <https://llm.agenticfi.wtf/docs/openclaw>

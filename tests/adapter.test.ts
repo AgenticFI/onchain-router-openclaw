@@ -63,6 +63,8 @@ describe("Onchain Router OpenClaw adapter", () => {
     const registered: ProviderPlugin[] = [];
     const unified: UnifiedCatalogPlugin[] = [];
     const services: PluginService[] = [];
+    const commands: unknown[] = [];
+    const tools: unknown[] = [];
     const logs: string[] = [];
     const fetch = vi.fn();
     registerOnchainRouter(
@@ -79,6 +81,8 @@ describe("Onchain Router OpenClaw adapter", () => {
         registerProvider: (provider) => registered.push(provider),
         registerModelCatalogProvider: (provider) => unified.push(provider),
         registerService: (service) => services.push(service),
+        registerCommand: (command) => commands.push(command),
+        registerTool: (tool) => tools.push(tool),
       },
       { fetch: fetch as unknown as typeof globalThis.fetch },
     );
@@ -106,6 +110,8 @@ describe("Onchain Router OpenClaw adapter", () => {
       { provider: "onchain-router", kinds: ["text"] },
     ]);
     expect(services).toMatchObject([{ id: "onchain-router-buyer-proxy" }]);
+    expect(commands).toHaveLength(1);
+    expect(tools).toHaveLength(6);
     expect(fetch).not.toHaveBeenCalled();
     expect(JSON.stringify(logs)).not.toContain(TOKEN);
   });
@@ -174,10 +180,37 @@ describe("Onchain Router OpenClaw adapter", () => {
       ["--profile", "/tmp", "--port", "8402"],
       expect.not.objectContaining({ NODE_AUTH_TOKEN: expect.anything() }),
     );
-    exitListener?.();
-    expect(context.serviceHealth.reportFailure).toHaveBeenCalledOnce();
     await service.stop?.(context);
     expect(kill).toHaveBeenCalledWith("SIGTERM");
+    exitListener?.();
+    expect(context.serviceHealth.reportFailure).not.toHaveBeenCalled();
+  });
+
+  it("reports a managed proxy crash without restarting or replaying", async () => {
+    let exitListener: (() => void) | undefined;
+    const child: ManagedChild = {
+      pid: 43,
+      exitCode: null,
+      kill: vi.fn(() => true),
+      once(_event, listener) { exitListener = () => listener(1, null); return this; },
+    };
+    const spawnChild = vi.fn(() => child);
+    let probes = 0;
+    const service = createProxyService(
+      parseConfig({ proxyOrigin: "http://127.0.0.1:8402", tokenFile: "/tmp/proxy-token" }),
+      {
+        probe: vi.fn(async () => ++probes > 1),
+        resolveEntrypoint: () => "/safe/proxy.js",
+        spawnChild,
+        now: () => 0,
+        sleep: vi.fn(async () => undefined),
+      },
+    );
+    const context = serviceContext();
+    await service.start(context);
+    exitListener?.();
+    expect(context.serviceHealth.reportFailure).toHaveBeenCalledOnce();
+    expect(spawnChild).toHaveBeenCalledOnce();
   });
 
   it("fails closed without a runtime download or process restart", async () => {
@@ -222,6 +255,31 @@ describe("Onchain Router OpenClaw adapter", () => {
     const context = serviceContext();
     await expect(service.start(context)).rejects.toThrow("failed to become ready");
     expect(kill).toHaveBeenCalledOnce();
+    expect(kill).toHaveBeenCalledWith("SIGTERM");
+  });
+
+  it("cancels an in-flight managed startup without losing the child reference", async () => {
+    let releaseProbe: (() => void) | undefined;
+    const firstProbe = new Promise<void>((resolve) => { releaseProbe = resolve; });
+    const kill = vi.fn(() => true);
+    const child: ManagedChild = { pid: 9, exitCode: null, kill, once() { return this; } };
+    let probes = 0;
+    const service = createProxyService(
+      parseConfig({ proxyOrigin: "http://127.0.0.1:8402", tokenFile: "/tmp/proxy-token" }),
+      {
+        probe: vi.fn(async () => { if (++probes === 1) return false; await firstProbe; return false; }),
+        resolveEntrypoint: () => "/safe/proxy.js",
+        spawnChild: () => child,
+        now: () => 0,
+        sleep: vi.fn(async () => undefined),
+      },
+    );
+    const context = serviceContext();
+    const starting = service.start(context);
+    await vi.waitFor(() => expect(probes).toBeGreaterThan(1));
+    await service.stop?.(context);
+    releaseProbe?.();
+    await expect(starting).rejects.toThrow("cancelled");
     expect(kill).toHaveBeenCalledWith("SIGTERM");
   });
 

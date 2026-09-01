@@ -6,6 +6,16 @@
   "activation": { "onStartup": true },
   "enabledByDefault": false,
   "providers": ["onchain-router"],
+  "contracts": {
+    "tools": [
+      "onchain_router_models",
+      "onchain_router_pricing",
+      "onchain_router_voices",
+      "onchain_router_image_generate",
+      "onchain_router_speech_generate",
+      "onchain_router_transcribe"
+    ]
+  },
   "configSchema": {
     "type": "object",
     "additionalProperties": false,

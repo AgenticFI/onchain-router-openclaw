@@ -57,6 +57,34 @@ try {
   if (protectedValues.some((value) => text.includes(value)))
     throw new Error("clean install inspection exposed a protected value");
 
+  run("pnpm", ["exec", "openclaw", "plugins", "disable", "onchain-router"]);
+  run("pnpm", [
+    "exec",
+    "openclaw",
+    "plugins",
+    "enable",
+    "onchain-router",
+    "--accept-capabilities",
+  ]);
+  run("pnpm", [
+    "exec",
+    "openclaw",
+    "plugins",
+    "install",
+    archive,
+    "--force",
+    "--accept-capabilities",
+  ]);
+  const updated = parseJsonOutput(
+    run(
+      "pnpm",
+      ["exec", "openclaw", "plugins", "inspect", "onchain-router", "--runtime", "--json"],
+      true,
+    ),
+  );
+  if (!JSON.stringify(updated).includes("onchain_router_image_generate"))
+    throw new Error("update qualification omitted the declared media tools");
+
   const packedPackage = JSON.parse(
     readFileSync(join(root, "package.json"), "utf8"),
   );
@@ -64,10 +92,16 @@ try {
     packedPackage.openclaw?.runtimeExtensions?.[0] !== "./dist/index.js" ||
     packedPackage.openclaw?.compat?.pluginApi !== ">=2026.8.1" ||
     packedPackage.name !== "@agenticfi/onchain-router-openclaw" ||
-    packedPackage.dependencies?.["@agenticfi/onchain-router-proxy"] !== "0.1.0"
+    packedPackage.dependencies?.["@agenticfi/onchain-router-proxy"] !== "0.1.0" ||
+    packedPackage.dependencies?.typebox !== "1.3.16"
   )
     throw new Error("clean install package metadata drifted");
-  console.log("openclaw_clean_install_ok");
+  run("pnpm", ["exec", "openclaw", "plugins", "uninstall", "onchain-router", "--dry-run"]);
+  run("pnpm", ["exec", "openclaw", "plugins", "uninstall", "onchain-router", "--force"]);
+  const afterUninstall = run("pnpm", ["exec", "openclaw", "plugins", "list", "--json"], true);
+  if (JSON.stringify(parseJsonOutput(afterUninstall)).includes("@agenticfi/onchain-router-openclaw"))
+    throw new Error("uninstall qualification left the managed plugin installed");
+  console.log("openclaw_install_update_uninstall_ok");
 } finally {
   rmSync(state, { recursive: true, force: true });
   rmSync(artifacts, { recursive: true, force: true });
