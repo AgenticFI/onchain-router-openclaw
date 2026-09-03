@@ -92,7 +92,7 @@ try {
     packedPackage.openclaw?.runtimeExtensions?.[0] !== "./dist/index.js" ||
     packedPackage.openclaw?.compat?.pluginApi !== ">=2026.8.1" ||
     packedPackage.name !== "@agenticfi/onchain-router-openclaw" ||
-    packedPackage.dependencies?.["@agenticfi/onchain-router-proxy"] !== "0.1.0" ||
+    packedPackage.dependencies?.["@agenticfi/onchain-router-proxy"] !== "0.1.2" ||
     packedPackage.dependencies?.typebox !== "1.3.16"
   )
     throw new Error("clean install package metadata drifted");

@@ -23,7 +23,7 @@ service, or spend USDC.
 - attaches a deterministic Buyer Runtime idempotency key to every host retry of one transport
   turn, without hashing prompt or completion content;
 - reuses an already healthy proxy or starts the exact installed
-  `@agenticfi/onchain-router-proxy@0.1.0` package as an OpenClaw service;
+  `@agenticfi/onchain-router-proxy@0.1.2` package as an OpenClaw service;
 - stops only the proxy child it started;
 - keeps registration lazy and free of file, network, process, wallet, and payment side effects.
 
@@ -38,7 +38,7 @@ proxy bearer.
 - OpenClaw `2026.8.1`;
 - macOS or Linux;
 - an AgenticFI Buyer Runtime profile created by a human;
-- the exact `@agenticfi/onchain-router-proxy@0.1.0` dependency installed with this extension.
+- the exact `@agenticfi/onchain-router-proxy@0.1.2` dependency installed with this extension.
 
 ## Build from source
 

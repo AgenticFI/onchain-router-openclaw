@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+- Updated the managed AgenticFI buyer proxy dependency to the corrected public npm alpha `0.1.2`.
+
 ## 0.1.0 - public-alpha candidate
 
 - Added the native OpenClaw text provider and live policy-filtered catalog.
