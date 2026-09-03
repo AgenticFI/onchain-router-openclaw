@@ -1,15 +1,15 @@
-name: ci
+name: release
 
 on:
-  pull_request:
   push:
-    branches: [main]
+    tags:
+      - "v*"
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
-  check:
+  github-release:
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
@@ -25,3 +25,9 @@ jobs:
       - run: pnpm check
       - run: pnpm qualification:clean-install
       - run: pnpm qualification:git-install
+      - run: mkdir -p release
+      - run: pnpm pack --pack-destination release
+      - name: Publish immutable GitHub release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release create "$GITHUB_REF_NAME" release/*.tgz --verify-tag --generate-notes --title "$GITHUB_REF_NAME"

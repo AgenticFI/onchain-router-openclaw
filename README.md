@@ -6,10 +6,13 @@ connects OpenClaw to the authenticated OpenAI-compatible proxy on `127.0.0.1`.
 
 ## Release status
 
-Version `0.1.0` is a bounded public-alpha source candidate. It is not yet published or
-production-qualified.
-Installation, build, and fake-loopback tests do not unlock a wallet, make a paid request, deploy a
-service, or spend USDC.
+Version `0.1.0` is a bounded public alpha. The source is public and installable directly from the
+versioned GitHub release. Installation, build, and fake-loopback tests do not unlock a wallet, make
+a paid request, deploy a service, or spend USDC. Funded OpenClaw acceptance remains an explicit
+operator test because it spends from the operator's Buyer Runtime wallet.
+
+ClawHub publication is a separate registry-review step. The pinned GitHub installation below works
+without waiting for that listing.
 
 ## What it does
 
@@ -40,6 +43,22 @@ proxy bearer.
 - an AgenticFI Buyer Runtime profile created by a human;
 - the exact `@agenticfi/onchain-router-proxy@0.1.2` dependency installed with this extension.
 
+## Install
+
+Review the [security model](./SECURITY.md), then install the immutable `v0.1.0` release with
+OpenClaw's native plugin manager:
+
+```bash
+openclaw plugins install git:github.com/AgenticFI/onchain-router-openclaw@v0.1.0 --force
+openclaw plugins enable onchain-router --accept-capabilities
+openclaw plugins inspect onchain-router --runtime --json
+```
+
+`--force` acknowledges that GitHub is an external source; it does not bypass OpenClaw's install
+policy or capability consent. The tag is pinned so a later repository update cannot silently
+replace the reviewed release. Use `openclaw plugins update onchain-router` only after reviewing a
+new AgenticFI release.
+
 ## Build from source
 
 ```bash
@@ -64,9 +83,9 @@ onchain-router setup
 onchain-router unlock
 ```
 
-Then install the packed extension using OpenClaw's managed plugin installer, review and accept its
-declared local-file/process capabilities, and enable the `onchain-router` plugin. The default local
-boundary is:
+The GitHub installation above uses OpenClaw's managed plugin installer. Review and accept its
+declared local-file/process capabilities, then enable the `onchain-router` plugin. The default
+local boundary is:
 
 ```text
 proxy origin:      http://127.0.0.1:8402
@@ -126,6 +145,8 @@ paths, query strings, fragments, and trailing slashes are rejected.
 
 ## Troubleshooting
 
+- Installation fails: use OpenClaw `2026.8.1`, confirm Git and Node.js 24 are installed, and inspect
+  `openclaw plugins doctor --json`.
 - Provider has no models: run `onchain-router doctor`, confirm the Buyer Runtime is unlocked, and
   restart OpenClaw.
 - Proxy cannot start: verify port `8402` is free and the exact proxy dependency is installed.
