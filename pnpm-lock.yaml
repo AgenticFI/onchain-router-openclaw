@@ -9,8 +9,8 @@ importers:
   .:
     dependencies:
       '@agenticfi/onchain-router-proxy':
-        specifier: 0.1.0
-        version: 0.1.0(typescript@5.9.3)(zod@4.4.3)
+        specifier: 0.1.2
+        version: 0.1.2(typescript@5.9.3)(zod@3.25.76)
       typebox:
         specifier: 1.3.16
         version: 1.3.16
@@ -41,21 +41,21 @@ packages:
     peerDependencies:
       zod: ^3.25.0 || ^4.0.0
 
-  '@agenticfi/onchain-router-buyer-core@0.1.0':
-    resolution: {integrity: sha512-gJoW2j9kAeVrL9rtVA11kCPMgAxQ8hs+ZfaDnf+Q14HE44KztueymDAAX9AY8do9Y4xs2f8gjz5Ow4+2j3cdhw==}
+  '@agenticfi/onchain-router-buyer-core@0.1.2':
+    resolution: {integrity: sha512-6mHJLNzEnUQo8tMo2XMK+8HPwU/mI7kyBqSpUVszVO8nNr0vgCWeye8QpP3DZEV2vX06XYN9gUYsxsc3YJqbNA==}
     engines: {node: '>=20.18.0'}
 
-  '@agenticfi/onchain-router-proxy@0.1.0':
-    resolution: {integrity: sha512-eq5czSlPCzAzT76diTpGNnOp4nw3SeIaFke5TRbLD5vtXTGL7ggHmmwG2e/pNznHSjEtHFU8S/llsczgyHhZ2A==}
+  '@agenticfi/onchain-router-proxy@0.1.2':
+    resolution: {integrity: sha512-mZfgGS4FENBWVza6jFvVb+GxLLumJqgCm4ji3LZ4BXcb7HhFuzqy9Lr7fTf1xzGVe35QHnB7/4Zo5EbkMHptvA==}
     engines: {node: '>=20.18.0'}
     hasBin: true
 
-  '@agenticfi/onchain-router-routing@0.1.0':
-    resolution: {integrity: sha512-BfKqnFz3wuCSKly0m0M9VDz9HO76aG/VFX+CIRr9bwimGF1mMGdGb7Bn4PtxHEYy296H6c7/s1mv9D+GwOQzbA==}
+  '@agenticfi/onchain-router-routing@0.1.2':
+    resolution: {integrity: sha512-VJVXVQdMQs6yP6GOHP2G6fnTtaZO+4UdkhJOYjEQlIJF6v6dWW2IM1GPpvFLQp2ixW3MeykScz09bSv7shyGHA==}
     engines: {node: '>=20.18.0'}
 
-  '@agenticfi/onchain-router@0.1.0':
-    resolution: {integrity: sha512-c9en8ivp/kr+i0J58cJHJneSmIOdHFp973LUVfit1LvlsqfJvS+Gnn1UX5AvWfqW71fFOgrPOs0DSQcmZv8mpg==}
+  '@agenticfi/onchain-router@0.1.2':
+    resolution: {integrity: sha512-HulBjZhzckmkpf5H9Vlh5mN9IMfyWo3X3bz/NEWwd66ecd+JH1YwGEk4y0iVeMIXki5kPc9aPpM/6rCmGZK2vw==}
     engines: {node: '>=20.18.0'}
 
   '@anthropic-ai/claude-agent-sdk-darwin-arm64@0.3.239':
@@ -2626,7 +2626,7 @@ snapshots:
     dependencies:
       zod: 4.4.3
 
-  '@agenticfi/onchain-router-buyer-core@0.1.0(typescript@5.9.3)':
+  '@agenticfi/onchain-router-buyer-core@0.1.2(typescript@5.9.3)':
     dependencies:
       '@x402/core': 2.21.0
       '@x402/evm': 2.21.0(typescript@5.9.3)
@@ -2639,26 +2639,26 @@ snapshots:
       - typescript
       - utf-8-validate
 
-  '@agenticfi/onchain-router-proxy@0.1.0(typescript@5.9.3)(zod@4.4.3)':
+  '@agenticfi/onchain-router-proxy@0.1.2(typescript@5.9.3)(zod@3.25.76)':
     dependencies:
-      '@agenticfi/onchain-router': 0.1.0(typescript@5.9.3)(zod@4.4.3)
-      '@agenticfi/onchain-router-buyer-core': 0.1.0(typescript@5.9.3)
+      '@agenticfi/onchain-router': 0.1.2(typescript@5.9.3)(zod@3.25.76)
+      '@agenticfi/onchain-router-buyer-core': 0.1.2(typescript@5.9.3)
     transitivePeerDependencies:
       - bufferutil
       - typescript
       - utf-8-validate
       - zod
 
-  '@agenticfi/onchain-router-routing@0.1.0': {}
+  '@agenticfi/onchain-router-routing@0.1.2': {}
 
-  '@agenticfi/onchain-router@0.1.0(typescript@5.9.3)(zod@4.4.3)':
+  '@agenticfi/onchain-router@0.1.2(typescript@5.9.3)(zod@3.25.76)':
     dependencies:
-      '@agenticfi/onchain-router-buyer-core': 0.1.0(typescript@5.9.3)
-      '@agenticfi/onchain-router-routing': 0.1.0
+      '@agenticfi/onchain-router-buyer-core': 0.1.2(typescript@5.9.3)
+      '@agenticfi/onchain-router-routing': 0.1.2
       '@x402/core': 2.21.0
       '@x402/evm': 2.21.0(typescript@5.9.3)
       '@x402/fetch': 2.21.0
-      viem: 2.55.11(typescript@5.9.3)(zod@4.4.3)
+      viem: 2.55.11(typescript@5.9.3)(zod@3.25.76)
     transitivePeerDependencies:
       - bufferutil
       - typescript
@@ -3348,11 +3348,6 @@ snapshots:
     optionalDependencies:
       typescript: 5.9.3
       zod: 3.25.76
-
-  abitype@1.2.3(typescript@5.9.3)(zod@4.4.3):
-    optionalDependencies:
-      typescript: 5.9.3
-      zod: 4.4.3
 
   abort-controller@3.0.0:
     dependencies:
@@ -4352,21 +4347,6 @@ snapshots:
     transitivePeerDependencies:
       - zod
 
-  ox@0.14.33(typescript@5.9.3)(zod@4.4.3):
-    dependencies:
-      '@adraffy/ens-normalize': 1.11.1
-      '@noble/ciphers': 1.3.0
-      '@noble/curves': 1.9.1
-      '@noble/hashes': 1.8.0
-      '@scure/bip32': 1.7.0
-      '@scure/bip39': 1.6.0
-      abitype: 1.2.3(typescript@5.9.3)(zod@4.4.3)
-      eventemitter3: 5.0.1
-    optionalDependencies:
-      typescript: 5.9.3
-    transitivePeerDependencies:
-      - zod
-
   p-limit@2.3.0:
     dependencies:
       p-try: 2.2.0
@@ -4918,23 +4898,6 @@ snapshots:
       abitype: 1.2.3(typescript@5.9.3)(zod@3.25.76)
       isows: 1.0.7(ws@8.21.0)
       ox: 0.14.33(typescript@5.9.3)(zod@3.25.76)
-      ws: 8.21.0
-    optionalDependencies:
-      typescript: 5.9.3
-    transitivePeerDependencies:
-      - bufferutil
-      - utf-8-validate
-      - zod
-
-  viem@2.55.11(typescript@5.9.3)(zod@4.4.3):
-    dependencies:
-      '@noble/curves': 1.9.1
-      '@noble/hashes': 1.8.0
-      '@scure/bip32': 1.7.0
-      '@scure/bip39': 1.6.0
-      abitype: 1.2.3(typescript@5.9.3)(zod@4.4.3)
-      isows: 1.0.7(ws@8.21.0)
-      ox: 0.14.33(typescript@5.9.3)(zod@4.4.3)
       ws: 8.21.0
     optionalDependencies:
       typescript: 5.9.3
