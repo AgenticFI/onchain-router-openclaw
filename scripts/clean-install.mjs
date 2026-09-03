@@ -90,10 +90,13 @@ try {
   );
   if (
     packedPackage.openclaw?.runtimeExtensions?.[0] !== "./dist/index.js" ||
+    packedPackage.openclaw?.extensions?.[0] !== "./dist/index.js" ||
     packedPackage.openclaw?.compat?.pluginApi !== ">=2026.8.1" ||
     packedPackage.name !== "@agenticfi/onchain-router-openclaw" ||
     packedPackage.dependencies?.["@agenticfi/onchain-router-proxy"] !== "0.1.2" ||
-    packedPackage.dependencies?.typebox !== "1.3.16"
+    packedPackage.dependencies?.typebox !== "1.3.16" ||
+    packedPackage.peerDependenciesMeta?.openclaw?.optional !== true ||
+    !packedPackage.files?.includes("after-install.md")
   )
     throw new Error("clean install package metadata drifted");
   run("pnpm", ["exec", "openclaw", "plugins", "uninstall", "onchain-router", "--dry-run"]);

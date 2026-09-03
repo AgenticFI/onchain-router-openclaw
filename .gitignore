@@ -1,5 +1,9 @@
 node_modules/
-dist/
+# The built runtime is versioned so OpenClaw's native Git installer can load a
+# reviewed release without running package lifecycle scripts.
+!dist/
+!dist/index.js
+!dist/index.d.ts
 coverage/
 *.log
 .DS_Store
