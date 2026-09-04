@@ -2,7 +2,7 @@
   "id": "onchain-router",
   "name": "Onchain Router",
   "description": "Use policy-bounded, receipt-backed LLM calls through the local AgenticFI Buyer Runtime.",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "activation": { "onStartup": true },
   "enabledByDefault": false,
   "providers": ["onchain-router"],

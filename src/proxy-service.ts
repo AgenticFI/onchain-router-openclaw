@@ -8,7 +8,7 @@ import { readProxyToken, type AdapterConfig } from "./config.js";
 import type { PluginService } from "./types.js";
 
 const PROXY_PACKAGE = "@agenticfi/onchain-router-proxy";
-const PROXY_VERSION = "0.1.2";
+const PROXY_VERSION = "0.1.3";
 const START_TIMEOUT_MS = 15_000;
 const PROBE_INTERVAL_MS = 100;
 const MAX_PACKAGE_JSON_BYTES = 16 * 1024;

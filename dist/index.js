@@ -267,7 +267,7 @@ import { createRequire } from "module";
 import { dirname as dirname2, isAbsolute as isAbsolute2, resolve as resolve2, sep } from "path";
 import process2 from "process";
 var PROXY_PACKAGE = "@agenticfi/onchain-router-proxy";
-var PROXY_VERSION = "0.1.2";
+var PROXY_VERSION = "0.1.3";
 var START_TIMEOUT_MS = 15e3;
 var PROBE_INTERVAL_MS = 100;
 var MAX_PACKAGE_JSON_BYTES = 16 * 1024;
@@ -713,7 +713,7 @@ function createOnchainRouterTools(config, dependencies = {}) {
 }
 
 // src/index.ts
-var VERSION = "0.1.0";
+var VERSION = "0.1.1";
 function stableTurnIdempotencyKey(sessionId, turnId, modelId) {
   const digest = createHash("sha256").update([sessionId ?? "", turnId, modelId].join("\0"), "utf8").digest("hex");
   return `openclaw-${digest}`;
@@ -723,7 +723,7 @@ function registerOnchainRouter(api, dependencies = {}) {
   const provider = {
     id: "onchain-router",
     label: "Onchain Router",
-    docsPath: "https://llm.agenticfi.wtf/docs",
+    docsPath: "https://onchainrouter.dev/docs",
     aliases: ["ocr"],
     envVars: [],
     catalog: {

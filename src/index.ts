@@ -13,7 +13,7 @@ import type {
   UnifiedCatalogPlugin,
 } from "./types.js";
 
-export const VERSION = "0.1.0";
+export const VERSION = "0.1.1";
 
 export function stableTurnIdempotencyKey(
   sessionId: string | undefined,
@@ -37,7 +37,7 @@ export function registerOnchainRouter(
   const provider: ProviderPlugin = {
     id: "onchain-router",
     label: "Onchain Router",
-    docsPath: "https://llm.agenticfi.wtf/docs",
+    docsPath: "https://onchainrouter.dev/docs",
     aliases: ["ocr"],
     envVars: [],
     catalog: {

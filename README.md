@@ -6,7 +6,7 @@ connects OpenClaw to the authenticated OpenAI-compatible proxy on `127.0.0.1`.
 
 ## Release status
 
-Version `0.1.0` is a bounded public alpha. The source is public and installable directly from the
+Version `0.1.1` is the stable public release. The source is public and installable directly from the
 versioned GitHub release. Installation, build, and fake-loopback tests do not unlock a wallet, make
 a paid request, deploy a service, or spend USDC. Funded OpenClaw acceptance remains an explicit
 operator test because it spends from the operator's Buyer Runtime wallet.
@@ -26,7 +26,7 @@ without waiting for that listing.
 - attaches a deterministic Buyer Runtime idempotency key to every host retry of one transport
   turn, without hashing prompt or completion content;
 - reuses an already healthy proxy or starts the exact installed
-  `@agenticfi/onchain-router-proxy@0.1.2` package as an OpenClaw service;
+  `@agenticfi/onchain-router-proxy@0.1.3` package as an OpenClaw service;
 - stops only the proxy child it started;
 - keeps registration lazy and free of file, network, process, wallet, and payment side effects.
 
@@ -41,15 +41,15 @@ proxy bearer.
 - OpenClaw `2026.8.1`;
 - macOS or Linux;
 - an AgenticFI Buyer Runtime profile created by a human;
-- the exact `@agenticfi/onchain-router-proxy@0.1.2` dependency installed with this extension.
+- the exact `@agenticfi/onchain-router-proxy@0.1.3` dependency installed with this extension.
 
 ## Install
 
-Review the [security model](./SECURITY.md), then install the immutable `v0.1.0` release with
+Review the [security model](./SECURITY.md), then install the immutable `v0.1.1` release with
 OpenClaw's native plugin manager:
 
 ```bash
-openclaw plugins install git:github.com/AgenticFI/onchain-router-openclaw@v0.1.0 --force
+openclaw plugins install git:github.com/AgenticFI/onchain-router-openclaw@v0.1.1 --force
 openclaw plugins enable onchain-router --accept-capabilities
 openclaw plugins inspect onchain-router --runtime --json
 ```
@@ -158,7 +158,7 @@ paths, query strings, fragments, and trailing slashes are rejected.
   proxy readiness facts.
 - Manual proxy mode fails: start `onchain-router-proxy` before selecting the provider.
 
-Documentation: <https://llm.agenticfi.wtf/docs/openclaw>
+Documentation: <https://onchainrouter.dev/docs/openclaw>
 
 Support: <https://github.com/AgenticFI/onchain-router-openclaw/issues>
 
