@@ -93,7 +93,7 @@ try {
     packedPackage.openclaw?.extensions?.[0] !== "./dist/index.js" ||
     packedPackage.openclaw?.compat?.pluginApi !== ">=2026.8.1" ||
     packedPackage.name !== "@agenticfi/onchain-router-openclaw" ||
-    packedPackage.dependencies?.["@agenticfi/onchain-router-proxy"] !== "0.1.2" ||
+    packedPackage.dependencies?.["@agenticfi/onchain-router-proxy"] !== "0.1.3" ||
     packedPackage.dependencies?.typebox !== "1.3.16" ||
     packedPackage.peerDependenciesMeta?.openclaw?.optional !== true ||
     !packedPackage.files?.includes("after-install.md")

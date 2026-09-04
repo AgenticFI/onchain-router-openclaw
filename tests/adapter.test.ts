@@ -39,7 +39,7 @@ describe("Onchain Router OpenClaw adapter", () => {
       manageProxy: true,
     });
     expect(() =>
-      parseConfig({ proxyOrigin: "https://llm.agenticfi.wtf" }),
+      parseConfig({ proxyOrigin: "https://onchainrouter.dev" }),
     ).toThrow("127.0.0.1");
     expect(() => parseConfig({ proxyOrigin: "http://localhost:8402" })).toThrow(
       "127.0.0.1",

@@ -60,7 +60,7 @@ declare function validateTranscription(value: unknown): [string, Record<string, 
 
 declare function createOnchainRouterTools(config: AdapterConfig, dependencies?: ProxyCallDependencies): AnyAgentTool[];
 
-declare const VERSION = "0.1.0";
+declare const VERSION = "0.1.1";
 declare function stableTurnIdempotencyKey(sessionId: string | undefined, turnId: string, modelId: string): string;
 declare function registerOnchainRouter(api: PluginApi, dependencies?: {
     readonly fetch?: typeof fetch;
