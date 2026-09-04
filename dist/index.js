@@ -266,8 +266,8 @@ import { lstatSync as lstatSync2, readFileSync as readFileSync2, realpathSync } 
 import { createRequire } from "module";
 import { dirname as dirname2, isAbsolute as isAbsolute2, resolve as resolve2, sep } from "path";
 import process2 from "process";
-var PROXY_PACKAGE = "@agenticfi/onchain-router-proxy";
-var PROXY_VERSION = "0.1.3";
+var PROXY_PACKAGE = "@onchainrouter/proxy";
+var PROXY_VERSION = "0.2.0";
 var START_TIMEOUT_MS = 15e3;
 var PROBE_INTERVAL_MS = 100;
 var MAX_PACKAGE_JSON_BYTES = 16 * 1024;
@@ -497,7 +497,7 @@ var common = {
   }),
   model: Type.String({
     pattern: MODEL_PATTERN,
-    description: "Exact model returned by the live AgenticFI catalog."
+    description: "Exact model returned by the live Onchain Router catalog."
   })
 };
 var EMPTY_SCHEMA = Type.Object({}, { additionalProperties: false });
@@ -649,14 +649,14 @@ function createOnchainRouterTools(config, dependencies = {}) {
     {
       name: "onchain_router_models",
       label: "Onchain Router Models",
-      description: "List live policy-filtered AgenticFI models without spending.",
+      description: "List live policy-filtered Onchain Router models without spending.",
       parameters: EMPTY_SCHEMA,
       execute: async (_id, _params, signal) => result(await getFree(config, "/v1/models", { ...dependencies, signal }))
     },
     {
       name: "onchain_router_pricing",
       label: "Onchain Router Pricing",
-      description: "Inspect current AgenticFI model pricing without spending.",
+      description: "Inspect current Onchain Router model pricing without spending.",
       parameters: EMPTY_SCHEMA,
       execute: async (_id, _params, signal) => result(await getFree(config, "/v1/pricing", { ...dependencies, signal }))
     },
@@ -713,7 +713,7 @@ function createOnchainRouterTools(config, dependencies = {}) {
 }
 
 // src/index.ts
-var VERSION = "0.1.1";
+var VERSION = "0.2.0";
 function stableTurnIdempotencyKey(sessionId, turnId, modelId) {
   const digest = createHash("sha256").update([sessionId ?? "", turnId, modelId].join("\0"), "utf8").digest("hex");
   return `openclaw-${digest}`;
@@ -764,7 +764,7 @@ function registerOnchainRouter(api, dependencies = {}) {
     api.registerTool(tool);
   api.registerCommand({
     name: "onchain-router",
-    description: "AgenticFI Onchain Router status, discovery, diagnostics, and recovery help",
+    description: "Onchain Router status, discovery, diagnostics, and recovery help",
     acceptsArgs: true,
     requireAuth: true,
     handler: async (context) => ({

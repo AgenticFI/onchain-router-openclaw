@@ -35,14 +35,14 @@ export function createOnchainRouterTools(
     {
       name: "onchain_router_models",
       label: "Onchain Router Models",
-      description: "List live policy-filtered AgenticFI models without spending.",
+      description: "List live policy-filtered Onchain Router models without spending.",
       parameters: EMPTY_SCHEMA,
       execute: async (_id, _params, signal) => result(await getFree(config, "/v1/models", { ...dependencies, signal })),
     },
     {
       name: "onchain_router_pricing",
       label: "Onchain Router Pricing",
-      description: "Inspect current AgenticFI model pricing without spending.",
+      description: "Inspect current Onchain Router model pricing without spending.",
       parameters: EMPTY_SCHEMA,
       execute: async (_id, _params, signal) => result(await getFree(config, "/v1/pricing", { ...dependencies, signal })),
     },

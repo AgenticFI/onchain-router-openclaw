@@ -2,7 +2,7 @@
 
 The OpenClaw adapter is installed but does not create, import, unlock, or fund a wallet.
 
-1. In a human-controlled terminal, install and configure the AgenticFI Buyer Runtime.
+1. In a human-controlled terminal, install and configure the Onchain Router Buyer Runtime.
 2. Start or unlock its local profile with conservative budgets.
 3. Restart OpenClaw, then run `/onchain-router doctor`.
 4. Select an `onchain-router/<model-id>` returned by the live model picker.

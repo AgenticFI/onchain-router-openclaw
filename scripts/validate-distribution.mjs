@@ -5,12 +5,12 @@ const readme = readFileSync("README.md", "utf8");
 const afterInstall = readFileSync("after-install.md", "utf8");
 
 const expectedInstall =
-  "openclaw plugins install git:github.com/AgenticFI/onchain-router-openclaw@v0.1.1 --force";
+  "openclaw plugins install git:github.com/OnchainRouter/onchain-router-openclaw@v0.2.0 --force";
 
-if (packageJson.name !== "@agenticfi/onchain-router-openclaw") {
+if (packageJson.name !== "@onchainrouter/openclaw") {
   throw new Error("public package name drifted");
 }
-if (packageJson.version !== "0.1.1" || packageJson.openclaw?.compat?.pluginApi !== ">=2026.8.1") {
+if (packageJson.version !== "0.2.0" || packageJson.openclaw?.compat?.pluginApi !== ">=2026.8.1") {
   throw new Error("release or OpenClaw compatibility metadata drifted");
 }
 if (packageJson.openclaw?.runtimeExtensions?.[0] !== "./dist/index.js") {

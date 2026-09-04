@@ -92,8 +92,8 @@ try {
     packedPackage.openclaw?.runtimeExtensions?.[0] !== "./dist/index.js" ||
     packedPackage.openclaw?.extensions?.[0] !== "./dist/index.js" ||
     packedPackage.openclaw?.compat?.pluginApi !== ">=2026.8.1" ||
-    packedPackage.name !== "@agenticfi/onchain-router-openclaw" ||
-    packedPackage.dependencies?.["@agenticfi/onchain-router-proxy"] !== "0.1.3" ||
+    packedPackage.name !== "@onchainrouter/openclaw" ||
+    packedPackage.dependencies?.["@onchainrouter/proxy"] !== "0.2.0" ||
     packedPackage.dependencies?.typebox !== "1.3.16" ||
     packedPackage.peerDependenciesMeta?.openclaw?.optional !== true ||
     !packedPackage.files?.includes("after-install.md")
@@ -102,7 +102,7 @@ try {
   run("pnpm", ["exec", "openclaw", "plugins", "uninstall", "onchain-router", "--dry-run"]);
   run("pnpm", ["exec", "openclaw", "plugins", "uninstall", "onchain-router", "--force"]);
   const afterUninstall = run("pnpm", ["exec", "openclaw", "plugins", "list", "--json"], true);
-  if (JSON.stringify(parseJsonOutput(afterUninstall)).includes("@agenticfi/onchain-router-openclaw"))
+  if (JSON.stringify(parseJsonOutput(afterUninstall)).includes("@onchainrouter/openclaw"))
     throw new Error("uninstall qualification left the managed plugin installed");
   console.log("openclaw_install_update_uninstall_ok");
 } finally {

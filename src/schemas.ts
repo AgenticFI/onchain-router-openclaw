@@ -22,7 +22,7 @@ const common = {
   }),
   model: Type.String({
     pattern: MODEL_PATTERN,
-    description: "Exact model returned by the live AgenticFI catalog.",
+    description: "Exact model returned by the live Onchain Router catalog.",
   }),
 };
 

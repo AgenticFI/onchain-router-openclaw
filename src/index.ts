@@ -13,7 +13,7 @@ import type {
   UnifiedCatalogPlugin,
 } from "./types.js";
 
-export const VERSION = "0.1.1";
+export const VERSION = "0.2.0";
 
 export function stableTurnIdempotencyKey(
   sessionId: string | undefined,
@@ -78,7 +78,7 @@ export function registerOnchainRouter(
     api.registerTool(tool);
   api.registerCommand({
     name: "onchain-router",
-    description: "AgenticFI Onchain Router status, discovery, diagnostics, and recovery help",
+    description: "Onchain Router status, discovery, diagnostics, and recovery help",
     acceptsArgs: true,
     requireAuth: true,
     handler: async (context) => ({
