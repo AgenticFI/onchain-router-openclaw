@@ -1,8 +1,8 @@
 # Changelog
 
-## 0.1.1 - 2026-09-04
+## 0.2.0 - 2026-09-04
 
-- Updated the managed AgenticFI buyer proxy dependency to stable npm release `0.1.3`.
+- Updated the managed Onchain Router buyer proxy dependency to stable npm release `0.2.0`.
 - Moved documentation and provider metadata to `https://onchainrouter.dev`.
 - Promoted the GitHub distribution from the bounded alpha channel to the stable release channel.
 - Added a pinned, host-native GitHub install path and post-install setup guidance.

@@ -26,5 +26,5 @@ authenticate to the loopback proxy. This repository does not persist that config
 OpenClaw profile and the bearer file must remain accessible only to the same trusted OS user.
 
 Report suspected vulnerabilities privately through
-<https://github.com/AgenticFI/onchain-router-openclaw/security/advisories/new>. Do not include
+<https://github.com/OnchainRouter/onchain-router-openclaw/security/advisories/new>. Do not include
 wallet keys, proxy bearers, payment payloads, receipt capabilities, prompts, or model output.
